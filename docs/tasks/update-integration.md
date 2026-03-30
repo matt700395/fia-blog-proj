@@ -27,6 +27,8 @@ API 및 데이터 연결을 구현한다.
 - docs/system.md
 - docs/task-definition.md
 - docs/current/structure.md
+- docs/current/schema.sql
+- docs/specs/supabase-spec.md
 - docs/current/integration.md (기존 존재 시)
 - docs/tasks/update-integration.md
 
@@ -42,9 +44,9 @@ API 및 데이터 연결을 구현한다.
 ────────────────────────────────────────────────────────
 
 - docs/current/integration.md (업데이트)
-- API 명세
-- Edge Function 설계
-- 프론트-백 연결 코드
+- Supabase Client 연결 코드 (src/ 내 해당 파일)
+- Edge Function 코드 (supabase/functions/{name}/index.ts) — 필요 시
+- API 명세 (integration.md 내 포함)
 
 ---
 
@@ -52,38 +54,43 @@ API 및 데이터 연결을 구현한다.
 [작업 절차]
 ────────────────────────────────────────────────────────
 
-1. Entity → API 정의
+1. 연결 방식 판단 (supabase-spec.md 기준)
 
-   - CRUD 기준 API 설계
-   - 필요한 endpoint 정의
+   각 기능별로 아래 중 선택:
+   - Supabase Client 직접 CRUD (단순 조회/생성/수정/삭제)
+   - Edge Function (데이터 가공 / 복잡 로직 / 외부 API 필요)
 
-2. API Spec 작성
+2. Supabase Client 연결 코드 작성
+
+   - src/lib/supabase.ts 초기화 확인
+   - 각 페이지/훅에서 supabase client 호출
+   - 에러 처리 포함
+
+3. Edge Function 생성 (필요한 경우)
+
+   - 판단 기준 재확인 (supabase-spec.md)
+   - supabase/functions/{function-name}/index.ts 생성
+   - 비즈니스 로직 작성 (Deno)
+   - 프론트에서 supabase.functions.invoke() 로 호출
+
+4. 인증 처리 (필요 시)
+
+   - Supabase Auth 연결
+   - 세션 확인 로직 추가
+   - 미인증 시 /auth redirect 처리
+
+5. RLS 정책 확인
+
+   - schema.sql의 RLS Policy와 실제 접근 패턴 일치 여부 확인
+   - 권한 문제 발생 시 schema.sql 수정 요청 (T5 재수행)
+
+6. integration.md 업데이트
 
    포함:
-   - endpoint
-   - method (GET / POST / PATCH / DELETE)
-   - request schema
-   - response schema
-
-3. Edge Function 설계
-
-   - 비즈니스 로직 정의
-   - 데이터 처리 흐름 정의
-
-4. 인증/권한 정의 (필요 시)
-
-   - 로그인 상태
-   - 접근 권한
-
-5. 프론트 연결 설계
-
-   - 어떤 API를 언제 호출하는지
-   - 어떤 데이터로 UI 업데이트하는지
-
-6. 실제 연결 코드 작성
-
-   - fetch / supabase client 등 사용 가능
-   - 상태 업데이트 처리
+   - 연결된 기능 목록
+   - 연결 방식 (Client / Edge Function)
+   - 인증 처리 방식
+   - 미완료 항목
 
 ---
 
@@ -120,8 +127,12 @@ API 및 데이터 연결을 구현한다.
 ────────────────────────────────────────────────────────
 
 - DB 구조 변경 (T5에서만 수행)
+- schema.sql 수정 (T5에서만 수행)
 - UI 구조 변경 (T2에서만 수행)
 - 프론트 흐름 변경
+- fetch/axios로 Supabase API 직접 호출
+- 환경변수를 코드에 하드코딩
+- 단순 CRUD에 Edge Function 사용
 
 ---
 
@@ -129,10 +140,12 @@ API 및 데이터 연결을 구현한다.
 [완료 기준]
 ────────────────────────────────────────────────────────
 
-□ 모든 주요 기능 API 존재  
-□ 프론트와 연결 완료  
-□ 데이터 흐름 정상  
+□ 모든 주요 기능 Supabase 연결 완료  
+□ 연결 방식 (Client / Edge Function) 판단 기준 준수  
+□ 프론트와 데이터 흐름 정상 동작  
 □ 에러 처리 존재  
+□ 인증이 필요한 기능에 Auth 연결됨  
+□ RLS 정책과 실제 접근 패턴 일치  
 
 ---
 

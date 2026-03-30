@@ -29,6 +29,7 @@ Phase: P2 — STRUCTURE
 - docs/current/front-prompt/
 - docs/current/prd.md
 - docs/tasks/create-structure.md
+- docs/specs/supabase-spec.md
 
 선택 입력:
 
@@ -48,6 +49,15 @@ Phase: P2 — STRUCTURE
 2. Entity 정의
 3. ERD (관계)
 4. Table Schema (컬럼)
+
+- docs/current/schema.sql
+
+포함 내용 (Supabase SQL Editor 실행용):
+
+1. CREATE TABLE (의존성 순서)
+2. FK 제약 조건
+3. RLS 활성화 및 Policy
+4. Index (필요 시)
 
 ---
 
@@ -80,6 +90,13 @@ Phase: P2 — STRUCTURE
    - 컬럼명
    - 타입
    - PK / FK 정의
+
+7. schema.sql 작성 (supabase-spec.md 기준)
+   - CREATE TABLE 문 작성
+   - FK 제약 조건 추가
+   - RLS 활성화 및 Policy 작성
+   - 필요한 Index 추가
+   - Supabase SQL Editor에서 바로 실행 가능한 형태로 작성
 
 ---
 
@@ -131,6 +148,8 @@ Phase: P2 — STRUCTURE
 □ 관계(ERD) 명확함  
 □ 테이블 구조 논리적임  
 □ 프론트 요구사항 충족  
+□ schema.sql 작성 완료 (실행 가능한 형태)  
+□ 모든 테이블에 RLS 적용됨  
 
 ---
 

@@ -146,24 +146,28 @@ front-prompt 기준으로 PRD를 최신 상태로 업데이트한다.
 Phase: P2 — STRUCTURE
 
 목적:
-프론트 설계를 기반으로 데이터 구조를 정의한다.
+프론트 설계를 기반으로 데이터 구조를 정의하고 Supabase용 SQL을 작성한다.
 
 입력:
 - docs/current/front-prompt/
 - docs/current/prd.md
+- docs/specs/supabase-spec.md
 
 출력:
 - docs/current/structure.md
+- docs/current/schema.sql (Supabase SQL Editor 실행용)
 
 수행 범위:
 - IA 추출
 - entity 정의
 - ERD 구성
 - 테이블 정의
+- schema.sql 작성 (CREATE TABLE, FK, RLS, Index)
 
 금지:
 - UI 변경
 - API 설계
+- 실제 Supabase 연결 코드 작성
 
 ---
 
@@ -174,24 +178,29 @@ Phase: P2 — STRUCTURE
 Phase: P3 — INTEGRATION
 
 목적:
-API 및 실제 데이터 연결을 구현하거나 수정한다.
+Supabase를 기반으로 API 연결 및 실제 데이터 연동을 구현하거나 수정한다.
 
 입력:
 - docs/current/structure.md
-- docs/current/integration.md
+- docs/current/schema.sql
+- docs/current/integration.md (기존 존재 시)
+- docs/specs/supabase-spec.md
 
 출력:
 - docs/current/integration.md 업데이트
-- 연결 코드
+- Supabase Client 연결 코드
+- Edge Function 코드 (필요 시)
 
 수행 범위:
-- API 수정
-- edge function 수정
-- auth 처리
+- Supabase Client 직접 CRUD 연결
+- Edge Function 생성 및 배포 설정 (복잡 로직)
+- Supabase Auth 연결
+- RLS 정책 확인
 
 금지:
 - UI 변경
-- DB 구조 변경
+- DB 구조 변경 (schema.sql은 T5에서만 수정)
+- fetch/axios로 Supabase 직접 호출
 
 ---
 
